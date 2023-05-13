@@ -1,6 +1,5 @@
 package com.example.burgerking.dto;
 
-import com.example.burgerking.entity.Category;
 import com.example.burgerking.entity.Menu;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 public class MenuResponseDto {
     private Long id;
     private String menuname;
-    private Category category;
+    private String category;
     private String imageUrl;
     private LocalDateTime createdDate;
 

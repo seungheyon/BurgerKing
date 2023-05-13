@@ -21,8 +21,7 @@ public class Menu extends Timestamp {
     private String menuname;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    private String category;
 
     @Column
     private String imageUrl;

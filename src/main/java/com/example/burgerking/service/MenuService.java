@@ -7,6 +7,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.burgerking.dto.MenuRequestDto;
 import com.example.burgerking.dto.MenuResponseDto;
 import com.example.burgerking.entity.Menu;
+import com.example.burgerking.entity.User;
+import com.example.burgerking.entity.UserRoleEnum;
 import com.example.burgerking.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +68,6 @@ public class MenuService {
         menu = menu.builder()
                 .menuRequestDto(menuRequestDto)
                 .imageUrl(imageUrl)
-                .user(user)
                 .build();
 
         menu = menuRepository.save(menu);
@@ -126,12 +127,6 @@ public class MenuService {
             if (menuRequestDto.getCategory() == null) {
                 menuRequestDto.setCategory(menu.getCategory());
             }
-
-            menu = menu.builder()
-                    .menuRequestDto(menuRequestDto)
-                    .imageUrl(imageUrl)
-                    .user(user)
-                    .build();
 
             menu.updateMenu(menuRequestDto, imageUrl);
         }

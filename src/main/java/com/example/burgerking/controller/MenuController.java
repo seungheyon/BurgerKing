@@ -2,6 +2,7 @@ package com.example.burgerking.controller;
 
 import com.example.burgerking.dto.MenuResponseDto;
 import com.example.burgerking.dto.MenuRequestDto;
+import com.example.burgerking.security.UserDetailsImpl;
 import com.example.burgerking.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
