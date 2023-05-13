@@ -199,4 +199,4 @@ gradle-app.setting
 .vscode/
 
 ## .properties files ##
-src/main/**/application.properties
+**/application.properties
