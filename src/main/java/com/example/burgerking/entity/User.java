@@ -18,14 +18,8 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private String username;
-    @Column(nullable = false, unique = true)
-    private String phonenumber;
-    @Column(nullable = false)
-    private String sex;
-    @Column(nullable = false)
-    private Date birth;
     @Column(nullable = false)
     private String  password;
     @Column(nullable = false)
@@ -36,9 +30,6 @@ public class User {
     public User(SignupRequestDto signupRequestDto,String password, UserRoleEnum role) {
         this.email = signupRequestDto.getEmailid();
         this.username = signupRequestDto.getUsername();
-        this.phonenumber = signupRequestDto.getPhonenumber();
-        this.sex = signupRequestDto.getSex();
-        this.birth = signupRequestDto.getBirth();
         this.password = password;
         this.role = role;
     }
