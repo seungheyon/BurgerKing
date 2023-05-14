@@ -18,12 +18,12 @@ public class UserController {
 
 //    @CrossOrigin("*")
     @PostMapping("/signup")
-    public ResponseEntity signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+    public String signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         return userService.login(loginRequestDto, response);
 
     }
