@@ -1,5 +1,7 @@
 package com.example.burgerking.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
@@ -8,17 +10,17 @@ import java.util.Date;
 @Getter
 public class SignupRequestDto {
 
+
+    @NotBlank(message = "이메일은 필수 입력 값입니다.")
+    @Email(message = "이메일 형식에 맞지 않습니다.")
     private String emailid;
-    @Pattern(regexp = "(?=.*[a-z])(?=.*[0-9])(?=\\S+$).{4,10}",
-            message = "아이디는 알파벳 소문자, 숫자를 입력하고 4~10자리로 구성해주세요.")
+
+    @NotBlank(message = "닉네임은 필수 입력 값입니다.")
     private String username;
-    private String phonenumber;
-    private String sex;
-    private Date birth;
-    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[~`!@#$%\\\\^&*()-])(?=\\S+$).{8,15}",
-            message = "비밀번호는 알파벳 대소문자, 숫자를 입력하고 8~15자리로 구성해주세요.")
+
+    @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
+    @Pattern(regexp="(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}",
+            message = "비밀번호는 영문 대,소문자와 숫자, 특수기호가 적어도 1개 이상씩 포함된 8자 ~ 20자의 비밀번호여야 합니다.")
     private String  password;
-    private boolean admin = false;
-    private String admintoken;
 
 }
