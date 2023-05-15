@@ -25,6 +25,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+
 
     @Transactional
     public ResponseDto<MenuVo> signup(SignupRequestDto signupRequestDto) {
@@ -37,7 +39,15 @@ public class UserService {
             throw new IllegalArgumentException("이미 사용중인 email 입니다.");
         }
 
+        // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
+        if (signupRequestDto.getTokenString() != "") {
+            if (!signupRequestDto.getTokenString().equals(ADMIN_TOKEN)) {
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+            }else {
+                role = UserRoleEnum.ADMIN;
+            }
+        }
 
         User user = new User(signupRequestDto, password, role);
         userRepository.save(user);
@@ -58,7 +68,7 @@ public class UserService {
             throw  new PasswordException("비밀번호가 일치하지 않습니다.");
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUserName()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUserName(), user.getRole()));
 
         return new ResponseDto<>("로그인이 완료되었습니다", HttpStatus.OK.value());
     }
