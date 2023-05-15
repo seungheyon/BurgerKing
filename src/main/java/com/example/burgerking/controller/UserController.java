@@ -25,7 +25,7 @@ public class UserController {
 //    }
 
     @PostMapping("/signup")
-    public String signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseDto<MenuVo> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
     }
 

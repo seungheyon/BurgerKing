@@ -1,11 +1,13 @@
 package com.example.burgerking.service;
 
 import com.example.burgerking.dto.LoginRequestDto;
+import com.example.burgerking.dto.ResponseDto;
 import com.example.burgerking.dto.SignupRequestDto;
 import com.example.burgerking.entity.User;
 import com.example.burgerking.entity.UserRoleEnum;
 import com.example.burgerking.jwt.JwtUtil;
 import com.example.burgerking.repository.UserRepository;
+import com.example.burgerking.vo.MenuVo;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,8 +25,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public String signup(SignupRequestDto signupRequestDto) {
-        String password = passwordEncoder.encode(signupRequestDto.getPassword());
+    public ResponseDto<MenuVo> signup(SignupRequestDto signupRequestDto) {
+        String password = passwordEncoder.encode(signupRequestDto.getPassword());   // pw 암호화하여 저장
         String emailId = signupRequestDto.getEmailId();
 
         // 회원 중복 확인
@@ -37,7 +39,7 @@ public class UserService {
 
         User user = new User(signupRequestDto,password, role);
         userRepository.save(user);
-        return "회원가입 성공";
+        return new ResponseDto<>("회원가입이 완료되었습니다", 200);
     }
 
     @Transactional(readOnly = true)
