@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MenuRequestDto {
-    private String menuname;
+    private String menuName;
     private String category;
 }

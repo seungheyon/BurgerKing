@@ -18,7 +18,7 @@ public class Menu extends Timestamp {
     private Long id;
 
     @Column(nullable = false)
-    private String menuname;
+    private String menuName;
 
     @Column(nullable = false)
     private String category;
@@ -28,13 +28,13 @@ public class Menu extends Timestamp {
 
     @Builder
     public Menu(MenuRequestDto menuRequestDto, String imageUrl) {
-        this.menuname = menuRequestDto.getMenuname();
+        this.menuName = menuRequestDto.getMenuName();
         this.category = menuRequestDto.getCategory();
         this.imageUrl = imageUrl;
     }
 
     public void updateMenu(MenuRequestDto menuRequestDto, String imageUrl) {
-        this.menuname = menuRequestDto.getMenuname();
+        this.menuName = menuRequestDto.getMenuName();
         this.category = menuRequestDto.getCategory();
         this.imageUrl = imageUrl;
     }

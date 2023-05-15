@@ -5,13 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class MenuVo {
-    private Long menuid;
-    private String menuname;
+    private Long menuId;
+    private String menuName;
     private String category;
-    private String imageurl;
+    private String imageUrl;
 }
 
 

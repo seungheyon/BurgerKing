@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResponseDto<T> {
     private String msg;
-    private int statuscode;
+    private int statusCode;
     private T result;
 
     public ResponseDto(String msg, int statuscode) {
         this.msg = msg;
-        this.statuscode = statuscode;
+        this.statusCode = statuscode;
     }
 }
 

@@ -89,7 +89,7 @@ public class MenuService {
 
         if (image == null) {        // image 가 없는 경우
             for (MenuRequestDto requestDto : list) {
-                if (requestDto.getMenuname() != null) menu.setMenuname(requestDto.getMenuname()); // image && title 있는 경우
+                if (requestDto.getMenuName() != null) menu.setMenuName(requestDto.getMenuName()); // image && title 있는 경우
                 if (requestDto.getCategory() != null) menu.setCategory(requestDto.getCategory()); // image && contents 있는 경우
             }
         }
@@ -121,8 +121,8 @@ public class MenuService {
                     .withCannedAcl(CannedAccessControlList.PublicRead));
             imageUrl = amazonS3.getUrl(bucketName, imageName).toString();
 
-            if (menuRequestDto.getMenuname() == null) {
-                menuRequestDto.setMenuname(menu.getMenuname());
+            if (menuRequestDto.getMenuName() == null) {
+                menuRequestDto.setMenuName(menu.getMenuName());
             }
             if (menuRequestDto.getCategory() == null) {
                 menuRequestDto.setCategory(menu.getCategory());

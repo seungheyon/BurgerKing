@@ -17,9 +17,9 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String emailId;
     @Column(nullable = false)
-    private String username;
+    private String userName;
     @Column(nullable = false)
     private String  password;
     @Column(nullable = false)
@@ -28,8 +28,8 @@ public class User {
 
     //그냥 회원가입
     public User(SignupRequestDto signupRequestDto,String password, UserRoleEnum role) {
-        this.email = signupRequestDto.getEmailid();
-        this.username = signupRequestDto.getUsername();
+        this.emailId = signupRequestDto.getEmailId();
+        this.userName = signupRequestDto.getUserName();
         this.password = password;
         this.role = role;
     }

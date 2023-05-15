@@ -25,10 +25,10 @@ public class UserService {
     @Transactional
     public String signup(SignupRequestDto signupRequestDto) {
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
-        String emailid = signupRequestDto.getEmailid();
+        String emailId = signupRequestDto.getEmailId();
 
         // 회원 중복 확인
-        Optional<User> findEmail = userRepository.findByEmail(emailid);
+        Optional<User> findEmail = userRepository.findByEmail(emailId);
         if (findEmail.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.(email일치)");
         }
@@ -42,7 +42,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public String login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        String emailid = loginRequestDto.getEmailid();
+        String emailid = loginRequestDto.getEmailId();
         String password = loginRequestDto.getPassword();
 
         // 사용자 확인
@@ -56,7 +56,7 @@ public class UserService {
             throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUserName()));
 
         return "로그인 성공";
     }
