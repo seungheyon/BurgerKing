@@ -76,9 +76,9 @@ public class MenuController {
         return menuService.getMenus(category);
     }
 
-    //메뉴 카테고리별 조회
-    @GetMapping("/api/menus/{menuId}")
-    public ResponseDto<MenuVo> getMenu(@PathVariable Long menuId) {
+    //메뉴 상세조회
+    @GetMapping("/api/menus/{category}/{menuId}")
+    public ResponseDto<MenuVo> getMenu(@PathVariable String category, @PathVariable Long menuId) {
         try {
             return menuService.getMenu(menuId);
         }
