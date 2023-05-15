@@ -4,15 +4,20 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.burgerking.dto.MenuListResponseDto;
 import com.example.burgerking.dto.MenuRequestDto;
 import com.example.burgerking.dto.MenuResponseDto;
+import com.example.burgerking.dto.ResponseDto;
 import com.example.burgerking.entity.Menu;
 import com.example.burgerking.entity.User;
 import com.example.burgerking.entity.UserRoleEnum;
+import com.example.burgerking.exception.NoAuthorityException;
 import com.example.burgerking.repository.MenuRepository;
+import com.example.burgerking.vo.MenuVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +43,11 @@ public class MenuService {
     private final AmazonS3 amazonS3;
 
     // 메뉴 저장
-    public MenuResponseDto createMenu(MenuRequestDto menuRequestDto, MultipartFile image) throws IOException {
+    public ResponseDto<MenuVo> createMenu(MenuRequestDto menuRequestDto, MultipartFile image, User user) throws IOException {
+
+        if (user.getRole() != UserRoleEnum.ADMIN) {
+            throw new NoAuthorityException("권한이 없습니다.");
+        }
         Menu menu = new Menu();
 
         // 파일명 새로 부여를 위한 현재 시간 알아내기
@@ -71,17 +80,18 @@ public class MenuService {
                 .build();
 
         menu = menuRepository.save(menu);
-        return new MenuResponseDto(menu);
+        return new ResponseDto<>("성공", HttpStatus.OK.value());
     }
 
     //메뉴 수정
-    public MenuResponseDto updateMenu(Long menuId, MenuRequestDto menuRequestDto, MultipartFile image, User user) throws IOException {
-        Menu menu = menuRepository.findById(menuId).orElseThrow(
-                () -> new IllegalArgumentException()
-        );
+    public ResponseDto<MenuVo> updateMenu(Long menuId, MenuRequestDto menuRequestDto, MultipartFile image, User user) throws IOException {
+
         if (user.getRole() != UserRoleEnum.ADMIN) {
-            throw new IllegalArgumentException();
+            throw new NoAuthorityException("권한이 없습니다.");
         }
+        Menu menu = menuRepository.findById(menuId).orElseThrow(
+                () -> new IllegalArgumentException("메뉴가 없습니다.")
+        );
 
         // image 가 있는데 title or contents 없는 경우
         List<MenuRequestDto> list = new ArrayList<>();
@@ -131,30 +141,33 @@ public class MenuService {
             menu.updateMenu(menuRequestDto, imageUrl);
         }
 
-        return new MenuResponseDto(menu);
+        return new ResponseDto<>("성공", HttpStatus.OK.value());
     }
 
     //메뉴 삭제
-    public String deleteMenu(Long menuId, User user) {
-        Menu menu = menuRepository.findById(menuId).orElseThrow(
-                () -> new IllegalArgumentException()
-        );
+    public ResponseDto<MenuVo> deleteMenu(Long menuId, User user) {
+
         if (user.getRole() != UserRoleEnum.ADMIN) {
-            throw new IllegalArgumentException();
+            throw new NoAuthorityException("권한이 없습니다.");
         }
+        Menu menu = menuRepository.findById(menuId).orElseThrow(
+                () -> new IllegalArgumentException("메뉴가 없습니다.")
+        );
+
         menuRepository.deleteById(menuId);
-        return "삭제 완료";
+        return new ResponseDto<>("성공", HttpStatus.OK.value());
     }
 
-    public List<MenuResponseDto> getMenu(String category) {
+    public MenuListResponseDto<MenuVo> getMenu(String category) {
         //menuRepository에서 findbycategory
         //MenuResponseDto 리스트에 붙여주기
-        List<MenuResponseDto> responseDto = new ArrayList<>();
+        List<MenuVo> menuVoList = new ArrayList<>();
+        //List<MenuResponseDto> responseDto = new ArrayList<>();
         List<Menu> menuList = menuRepository.findByCategoryOrderByCreatedDateDesc(category);
         for (Menu menu : menuList) {
-            responseDto.add(new MenuResponseDto(menu));
+            menuVoList.add(new MenuVo(menu.getId(), menu.getMenuName(), menu.getCategory(), menu.getImageUrl()));
+            //responseDto.add(new MenuResponseDto(menu));
         }
-        return responseDto;
+        return new MenuListResponseDto<>("성공", HttpStatus.OK.value(), menuVoList);
     }
-
 }
