@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Slf4j
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", exposedHeaders = "Authorization")
 @RestController
 @RequiredArgsConstructor
 public class MenuController {
