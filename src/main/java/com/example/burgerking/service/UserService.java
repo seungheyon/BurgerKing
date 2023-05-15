@@ -28,14 +28,14 @@ public class UserService {
         String emailId = signupRequestDto.getEmailId();
 
         // 회원 중복 확인
-        Optional<User> findEmail = userRepository.findByEmail(emailId);
+        Optional<User> findEmail = userRepository.findByEmailId(emailId);
         if (findEmail.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.(email일치)");
         }
 
         UserRoleEnum role = UserRoleEnum.USER;
 
-        User user = new User(signupRequestDto,password, role);
+        User user = new User(signupRequestDto, password, role);
         userRepository.save(user);
         return "회원가입 성공";
     }
@@ -46,7 +46,7 @@ public class UserService {
         String password = loginRequestDto.getPassword();
 
         // 사용자 확인
-        User user = userRepository.findByEmail(emailid).orElseThrow(
+        User user = userRepository.findByEmailId(emailid).orElseThrow(
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
 
@@ -60,6 +60,5 @@ public class UserService {
 
         return "로그인 성공";
     }
-
 }
 
