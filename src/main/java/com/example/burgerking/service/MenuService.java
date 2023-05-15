@@ -158,7 +158,7 @@ public class MenuService {
         return new ResponseDto<>("성공", HttpStatus.OK.value());
     }
 
-    public MenuListResponseDto<MenuVo> getMenu(String category) {
+    public MenuListResponseDto<MenuVo> getMenus(String category) {
         //menuRepository에서 findbycategory
         //MenuResponseDto 리스트에 붙여주기
         List<MenuVo> menuVoList = new ArrayList<>();
@@ -169,5 +169,14 @@ public class MenuService {
             //responseDto.add(new MenuResponseDto(menu));
         }
         return new MenuListResponseDto<>("성공", HttpStatus.OK.value(), menuVoList);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<MenuVo> getMenu(Long menuId) {
+        Menu menu = menuRepository.findById(menuId).orElseThrow(
+                () -> new IllegalArgumentException("메뉴가 없습니다.")
+        );
+        MenuVo menuVo = new MenuVo(menu.getId(), menu.getMenuName(), menu.getCategory(), menu.getImageUrl());
+        return new ResponseDto<>("성공",HttpStatus.OK.value(),menuVo);
     }
 }

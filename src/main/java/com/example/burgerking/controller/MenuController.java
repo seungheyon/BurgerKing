@@ -72,8 +72,18 @@ public class MenuController {
 
     //메뉴 카테고리별 조회
     @GetMapping("/api/menus/{category}")
-    public MenuListResponseDto<MenuVo> getMenu(@PathVariable String category) {
-        return menuService.getMenu(category);
+    public MenuListResponseDto<MenuVo> getMenus(@PathVariable String category) {
+        return menuService.getMenus(category);
     }
 
+    //메뉴 카테고리별 조회
+    @GetMapping("/api/menus/{menuId}")
+    public ResponseDto<MenuVo> getMenu(@PathVariable Long menuId) {
+        try {
+            return menuService.getMenu(menuId);
+        }
+        catch (IllegalArgumentException e){ // 메뉴가 없는 경우
+            return new ResponseDto<>(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        }
+    }
 }
