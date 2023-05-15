@@ -1,8 +1,10 @@
 package com.example.burgerking.controller;
 
 import com.example.burgerking.dto.LoginRequestDto;
+import com.example.burgerking.dto.ResponseDto;
 import com.example.burgerking.dto.SignupRequestDto;
 import com.example.burgerking.service.UserService;
+import com.example.burgerking.vo.MenuVo;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +19,13 @@ public class UserController {
     private final UserService userService;
 
 //    @CrossOrigin("*")
+//    @PostMapping("/signup")
+//    public ResponseEntity signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+//        return userService.signup(signupRequestDto);
+//    }
+
     @PostMapping("/signup")
-    public ResponseEntity signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseDto<MenuVo> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
     }
 
