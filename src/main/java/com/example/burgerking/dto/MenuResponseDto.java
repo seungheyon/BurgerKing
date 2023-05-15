@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MenuResponseDto {
     private Long id;
-    private String menuname;
+    private String menuName;
     private String category;
     private String imageUrl;
     private LocalDateTime createdDate;
 
     public MenuResponseDto(Menu menu){
         this.id = menu.getId();
-        this.menuname = menu.getMenuname();
+        this.menuName = menu.getMenuName();
         this.category = menu.getCategory();
         this.imageUrl = menu.getImageUrl();
         this.createdDate = menu.getCreatedDate();
