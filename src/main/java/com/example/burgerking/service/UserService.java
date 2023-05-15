@@ -8,8 +8,6 @@ import com.example.burgerking.jwt.JwtUtil;
 import com.example.burgerking.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public ResponseEntity signup(SignupRequestDto signupRequestDto) {
+    public String signup(SignupRequestDto signupRequestDto) {
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
         String emailid = signupRequestDto.getEmailid();
 
@@ -39,11 +37,11 @@ public class UserService {
 
         User user = new User(signupRequestDto,password, role);
         userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK).body("회원가입 성공");
+        return "회원가입 성공";
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public String login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String emailid = loginRequestDto.getEmailid();
         String password = loginRequestDto.getPassword();
 
@@ -60,7 +58,7 @@ public class UserService {
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
 
-        return ResponseEntity.status(HttpStatus.OK).body("로그인 성공");
+        return "로그인 성공";
     }
 
 }
