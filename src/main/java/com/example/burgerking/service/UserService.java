@@ -41,12 +41,11 @@ public class UserService {
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
-        if (signupRequestDto.getTokenString() != "") {
+        if (signupRequestDto.isAdmin()) {
             if (!signupRequestDto.getTokenString().equals(ADMIN_TOKEN)) {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
-            }else {
-                role = UserRoleEnum.ADMIN;
             }
+            role = UserRoleEnum.ADMIN;
         }
 
         User user = new User(signupRequestDto, password, role);

@@ -23,8 +23,7 @@ public class SignupRequestDto {
     //        message = "비밀번호는 영문 대,소문자와 숫자, 특수기호가 적어도 1개 이상씩 포함된 8자 ~ 20자의 비밀번호여야 합니다.")
     private String  password;
 
-    private Boolean admin;
-
-    private String tokenString;
+    private boolean admin = false;
+    private String tokenString = "";
 
 }
