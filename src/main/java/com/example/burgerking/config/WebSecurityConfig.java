@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -51,6 +52,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/api/login").permitAll()
                 .requestMatchers("/api/signup").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/menus/**").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated()
 
