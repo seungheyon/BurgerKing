@@ -158,6 +158,18 @@ public class MenuService {
         return new ResponseDto<>("성공", HttpStatus.OK.value());
     }
 
+    //메뉴 전체조회
+    public MenuListResponseDto<MenuVo> getMenu() {
+        List<MenuVo> menuVoList = new ArrayList<>();
+        List<Menu> menuList = menuRepository.findAllByOrderByCreatedDateDesc();
+        for (Menu menu : menuList) {
+            menuVoList.add(new MenuVo(menu.getId(), menu.getMenuName(), menu.getCategory(), menu.getImageUrl()));
+            //responseDto.add(new MenuResponseDto(menu));
+        }
+        return new MenuListResponseDto<>("성공", HttpStatus.OK.value(), menuVoList);
+    }
+
+    //메뉴 카테고리별 조회
     public MenuListResponseDto<MenuVo> getMenus(String category) {
         //menuRepository에서 findbycategory
         //MenuResponseDto 리스트에 붙여주기
@@ -171,8 +183,9 @@ public class MenuService {
         return new MenuListResponseDto<>("성공", HttpStatus.OK.value(), menuVoList);
     }
 
+    //메뉴 상세조회
     @Transactional(readOnly = true)
-    public ResponseDto<MenuVo> getMenu(Long menuId) {
+    public ResponseDto<MenuVo> getDetail(Long menuId) {
         Menu menu = menuRepository.findById(menuId).orElseThrow(
                 () -> new IllegalArgumentException("메뉴가 없습니다.")
         );
