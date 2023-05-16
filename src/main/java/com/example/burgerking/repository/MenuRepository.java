@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findByCategoryOrderByCreatedDateDesc(String category);
+    List<Menu> findAllByOrderByCreatedDateDesc();
 }
