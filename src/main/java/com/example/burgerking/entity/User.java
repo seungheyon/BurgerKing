@@ -18,19 +18,37 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String emailId;
-    @Column(nullable = false)
+
+    private Long kakaoId;
+
     private String userName;
+
     @Column(nullable = false)
-    private String  password;
+    private String password;
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
     //그냥 회원가입
-    public User(SignupRequestDto signupRequestDto,String password, UserRoleEnum role) {
+    public User(SignupRequestDto signupRequestDto, UserRoleEnum role) {
         this.emailId = signupRequestDto.getEmailId();
         this.userName = signupRequestDto.getUserName();
+        this.password = signupRequestDto.getPassword();
+        this.role = role;
+    }
+
+    //카카오 회원가입
+    public User(Long kakaoId, String emailId, String userName, String password, UserRoleEnum role) {
+        this.kakaoId = kakaoId;
+        this.emailId = emailId;
+        this.userName = userName;
         this.password = password;
         this.role = role;
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 }
