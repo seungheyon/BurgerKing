@@ -31,7 +31,7 @@ public class User {
     private UserRoleEnum role;
 
     //그냥 회원가입
-    public User(SignupRequestDto signupRequestDto,String password, UserRoleEnum role) {
+    public User(SignupRequestDto signupRequestDto, String password, UserRoleEnum role) {
         this.emailId = signupRequestDto.getEmailId();
         this.userName = signupRequestDto.getUserName();
         this.password = password;

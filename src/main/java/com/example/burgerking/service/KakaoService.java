@@ -1,6 +1,7 @@
 package com.example.burgerking.service;
 
 import com.example.burgerking.dto.KakaoUserInfoDto;
+import com.example.burgerking.dto.ResponseDto;
 import com.example.burgerking.entity.User;
 import com.example.burgerking.entity.UserRoleEnum;
 import com.example.burgerking.jwt.JwtUtil;
@@ -8,12 +9,10 @@ import com.example.burgerking.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +31,26 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public KakaoUserInfoDto kakaoLogin(String code) throws JsonProcessingException {
+    public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
         // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
 
-        return kakaoUserInfo;
+        // 3. 필요시에 회원가입
+        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
+
+        // 4. JWT 토큰 반환
+        String createToken =  jwtUtil.createToken(kakaoUser.getUserName(), kakaoUser.getRole());
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
+
+        // Cookie 생성 및 직접 브라우저에 Set
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7));
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return new ResponseDto("로그인 성공", HttpStatus.OK.value(), kakaoUserInfo.getNickname());
     }
 
     // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -89,6 +100,37 @@ public class KakaoService {
 
         log.info("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
         return new KakaoUserInfoDto(id, nickname, email);
+    }
+
+    // 3. 필요시에 회원가입
+    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
+        // DB 에 중복된 Kakao Id 가 있는지 확인
+        Long kakaoId = kakaoUserInfo.getId();
+        User kakaoUser = userRepository.findByKakaoId(kakaoId)
+                .orElse(null);
+        if (kakaoUser == null) {
+            // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
+            String kakaoEmail = kakaoUserInfo.getEmail();
+            User sameEmailUser = userRepository.findByEmailId(kakaoEmail).orElse(null);
+            if (sameEmailUser != null) {
+                kakaoUser = sameEmailUser;
+                // 기존 회원정보에 카카오 Id 추가
+                kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
+            } else {
+                // 신규 회원가입
+                // password: random UUID
+                String password = UUID.randomUUID().toString();
+                String encodedPassword = passwordEncoder.encode(password);
+
+                // email: kakao email
+                String email = kakaoUserInfo.getEmail();
+
+                kakaoUser = new User(kakaoId, email, kakaoUserInfo.getNickname(), encodedPassword, UserRoleEnum.USER);
+            }
+
+            userRepository.save(kakaoUser);
+        }
+        return kakaoUser;
     }
 
 }

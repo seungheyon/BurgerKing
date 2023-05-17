@@ -51,7 +51,7 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(signupRequestDto,password, role);
+        User user = new User(signupRequestDto, password, role);
         userRepository.save(user);
         return new ResponseDto<>("회원가입이 완료되었습니다", HttpStatus.OK.value());
     }
@@ -87,4 +87,3 @@ public class UserService {
     }
 
 }
-

@@ -52,10 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/kakao")
-    public KakaoUserInfoDto kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        KakaoUserInfoDto kakaoUserInfoDto = kakaoService.kakaoLogin(code);
-
-        return kakaoUserInfoDto;
+    public ResponseDto<String> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
+        return kakaoService.kakaoLogin(code,response);
     }
 
     @PostMapping("/logout")
