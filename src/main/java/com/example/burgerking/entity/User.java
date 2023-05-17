@@ -31,10 +31,10 @@ public class User {
     private UserRoleEnum role;
 
     //그냥 회원가입
-    public User(SignupRequestDto signupRequestDto, UserRoleEnum role) {
+    public User(SignupRequestDto signupRequestDto,String password, UserRoleEnum role) {
         this.emailId = signupRequestDto.getEmailId();
         this.userName = signupRequestDto.getUserName();
-        this.password = signupRequestDto.getPassword();
+        this.password = password;
         this.role = role;
     }
 

@@ -84,7 +84,7 @@ public class MenuService {
     }
 
     //메뉴 수정
-    public ResponseDto<MenuVo> updateMenu(Long menuId, MenuRequestDto menuRequestDto, MultipartFile image, User user) throws IOException {
+    public synchronized ResponseDto<MenuVo> updateMenu(Long menuId, MenuRequestDto menuRequestDto, MultipartFile image, User user) throws IOException {
 
         if (user.getRole() != UserRoleEnum.ADMIN) {
             throw new NoAuthorityException("권한이 없습니다.");
@@ -143,6 +143,11 @@ public class MenuService {
 
         return new ResponseDto<>("성공", HttpStatus.OK.value());
     }
+    // synchronized를 사용해 메서드의 실행 도중 다른 스레드가 해당 메서드에 진입하는 것을
+    // 방지하여 데이터 일관성 문제를 예방할 수 있습니다.
+    // 동시성을 크게 저해하고 성능 문제가 일어날 수 있지만 Admin계정이 그렇게
+    // 많지 않기 때문에 사용가능
+
 
     //메뉴 삭제
     public ResponseDto<MenuVo> deleteMenu(Long menuId, User user) {

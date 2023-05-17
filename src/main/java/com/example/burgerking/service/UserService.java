@@ -48,7 +48,7 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(signupRequestDto, role);
+        User user = new User(signupRequestDto,password, role);
         userRepository.save(user);
         return new ResponseDto<>("회원가입이 완료되었습니다", HttpStatus.OK.value());
     }
@@ -68,8 +68,8 @@ public class UserService {
         }
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUserName(), user.getRole()));
-
-        return new ResponseDto<>("로그인이 완료되었습니다", HttpStatus.OK.value());
+        String username = user.getUserName();
+        return new ResponseDto<>("로그인이 완료되었습니다", HttpStatus.OK.value(),username);
     }
 }
 
