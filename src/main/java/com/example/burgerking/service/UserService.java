@@ -7,8 +7,10 @@ import com.example.burgerking.entity.User;
 import com.example.burgerking.entity.UserRoleEnum;
 import com.example.burgerking.exception.PasswordException;
 import com.example.burgerking.jwt.JwtUtil;
+import com.example.burgerking.redis.RedisUtil;
 import com.example.burgerking.repository.UserRepository;
 import com.example.burgerking.vo.MenuVo;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final RedisUtil redisUtil;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
 
@@ -71,5 +74,17 @@ public class UserService {
         String username = user.getUserName();
         return new ResponseDto<>("로그인이 완료되었습니다", HttpStatus.OK.value(),username);
     }
+
+    //로그아웃 (redis)
+    public ResponseDto<MenuVo> logout(User user, HttpServletRequest request) {
+        //토큰 가져와 bearer 포함 7자리 자르기
+        String accessToken = request.getHeader("Authorization").substring(7);
+
+        // 레디스에 accessToken 사용못하도록 등록
+        redisUtil.setBlackList(accessToken, "accessToken", 5L);
+
+        return new ResponseDto<>("로그아웃이 완료되었습니다", HttpStatus.OK.value());
+    }
+
 }
 
