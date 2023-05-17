@@ -95,5 +95,14 @@ public class JwtUtil {
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
+    // 토큰의 남은 유효시간 반환(ms)
+    public Long getTokenExpiration(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+
+        Date getExpiration = claims.getExpiration();
+        Date now = new Date();
+
+        return getExpiration.getTime() - now.getTime();
+    }
 
 }

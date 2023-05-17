@@ -6,6 +6,7 @@ import com.example.burgerking.dto.SignupRequestDto;
 import com.example.burgerking.exception.PasswordException;
 import com.example.burgerking.service.UserService;
 import com.example.burgerking.vo.MenuVo;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,10 @@ public class UserController {
         catch (PasswordException e){
             return new ResponseDto<>(e.getMessage(), HttpStatus.BAD_REQUEST.value());
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseDto<MenuVo> logout(HttpServletRequest request){
+        return userService.logout(request);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.burgerking.service;
 
+import com.example.burgerking.dao.RedisDao;
 import com.example.burgerking.dto.LoginRequestDto;
 import com.example.burgerking.dto.ResponseDto;
 import com.example.burgerking.dto.SignupRequestDto;
@@ -9,13 +10,18 @@ import com.example.burgerking.exception.PasswordException;
 import com.example.burgerking.jwt.JwtUtil;
 import com.example.burgerking.repository.UserRepository;
 import com.example.burgerking.vo.MenuVo;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.*;
+import java.time.Duration;
 import java.util.Optional;
 
 @Service
@@ -26,6 +32,9 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    private final RedisDao redisDao;
+    //@Autowired
+    //private JwtTokenProvider jwtTokenProvider;
 
 
     @Transactional
@@ -71,5 +80,19 @@ public class UserService {
 
         return new ResponseDto<>("로그인이 완료되었습니다", HttpStatus.OK.value());
     }
+
+    @Transactional
+    public ResponseDto<MenuVo> logout(HttpServletRequest request){
+        String token = jwtUtil.resolveToken(request);
+        Long expiration = jwtUtil.getTokenExpiration(token);
+        if(!jwtUtil.validateToken(token)){
+            return new ResponseDto<>("유효하지 않은 토큰입니다", HttpStatus.BAD_REQUEST.value());
+        }
+
+        redisDao.setValues(token, "logout", Duration.ofMillis(expiration));
+
+        return new ResponseDto<>("로그아웃 완료", HttpStatus.OK.value());
+    }
+
 }
 
