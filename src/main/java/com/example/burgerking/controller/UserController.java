@@ -6,16 +6,19 @@ import com.example.burgerking.dto.ResponseDto;
 import com.example.burgerking.dto.SignupRequestDto;
 import com.example.burgerking.exception.PasswordException;
 import com.example.burgerking.jwt.JwtUtil;
+import com.example.burgerking.security.UserDetailsImpl;
 import com.example.burgerking.service.KakaoService;
 import com.example.burgerking.service.UserService;
 import com.example.burgerking.vo.MenuVo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", exposedHeaders = "Authorization")
@@ -54,4 +57,15 @@ public class UserController {
 
         return kakaoUserInfoDto;
     }
+
+    @PostMapping("/logout")
+    public ResponseDto<MenuVo> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
+        try {
+            return userService.logout(userDetails.getUser(), request);
+        }
+        catch (Exception e){
+            return new ResponseDto<>(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        }
+    }
+
 }
