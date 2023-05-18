@@ -52,16 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/kakao")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        // code: 카카오 서버로부터 받은 인가 코드
-        String createToken = kakaoService.kakaoLogin(code, response);
-
-        // Cookie 생성 및 직접 브라우저에 Set
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7));
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return "카카오로그인 완료";
+    public ResponseDto<String> kakaoLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
+        return kakaoService.kakaoLogin(code,response);
     }
 
     @PostMapping("/logout")
