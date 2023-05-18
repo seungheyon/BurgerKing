@@ -31,7 +31,7 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public ResponseDto<String> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -45,12 +45,7 @@ public class KakaoService {
         String createToken =  jwtUtil.createToken(kakaoUser.getUserName(), kakaoUser.getRole());
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
 
-        // Cookie 생성 및 직접 브라우저에 Set
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7));
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return new ResponseDto("로그인 성공", HttpStatus.OK.value(), kakaoUserInfo.getNickname());
+        return createToken;
     }
 
     // 1. "인가 코드"로 "액세스 토큰" 요청
