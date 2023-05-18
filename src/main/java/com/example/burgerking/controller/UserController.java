@@ -10,6 +10,7 @@ import com.example.burgerking.security.UserDetailsImpl;
 import com.example.burgerking.service.KakaoService;
 import com.example.burgerking.service.UserService;
 import com.example.burgerking.vo.MenuVo;
+import com.example.burgerking.vo.UserVo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ public class UserController {
 
 
     @PostMapping("/signup")
-    public ResponseDto<MenuVo> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseDto<UserVo> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         try {
             return userService.signup(signupRequestDto);
         } catch (IllegalArgumentException e) {
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseDto<MenuVo> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseDto<UserVo> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
             return userService.login(loginRequestDto, response);
         } catch (IllegalArgumentException e) {
@@ -57,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseDto<MenuVo> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
+    public ResponseDto<UserVo> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
         try {
             return userService.logout(userDetails.getUser(), request);
         }

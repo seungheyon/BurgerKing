@@ -10,6 +10,7 @@ import com.example.burgerking.jwt.JwtUtil;
 import com.example.burgerking.redis.RedisUtil;
 import com.example.burgerking.repository.UserRepository;
 import com.example.burgerking.vo.MenuVo;
+import com.example.burgerking.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class UserService {
 
 
     @Transactional
-    public ResponseDto<MenuVo> signup(SignupRequestDto signupRequestDto) {
+    public ResponseDto<UserVo> signup(SignupRequestDto signupRequestDto) {
         String emailId = signupRequestDto.getEmailId();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());   // pw 암호화하여 저장
 
@@ -57,7 +58,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<MenuVo> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseDto<UserVo> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String emailId = loginRequestDto.getEmailId();
         String password = loginRequestDto.getPassword();
 
@@ -72,11 +73,16 @@ public class UserService {
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUserName(), user.getRole()));
         String username = user.getUserName();
-        return new ResponseDto<>("로그인이 완료되었습니다", HttpStatus.OK.value(),username);
+        Boolean isAdmin = false;
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+            isAdmin = true;
+        }
+        UserVo userVo = new UserVo(username, isAdmin);
+        return new ResponseDto<>("로그인이 완료되었습니다", HttpStatus.OK.value(),userVo);
     }
 
     //로그아웃 (redis)
-    public ResponseDto<MenuVo> logout(User user, HttpServletRequest request) {
+    public ResponseDto<UserVo> logout(User user, HttpServletRequest request) {
         //토큰 가져와 bearer 포함 7자리 자르기
         String accessToken = request.getHeader("Authorization").substring(7);
 
