@@ -40,10 +40,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
             //redis 로그아웃 토큰 검증
-            if (redisUtil.hasKeyBlackList(token)){
-                // TODO 에러 발생시키는 부분 수정
-                throw new RuntimeException("로그아웃 했지롱~~");
-            }
+                if (redisUtil.hasKeyBlackList(token)) {
+                    // TODO 에러 발생시키는 부분 수정
+                    jwtExceptionHandler(response, "Login please", HttpStatus.UNAUTHORIZED.value());
+                    return;
+                }
             //redis 로그아웃 토큰 검증
             Claims info = jwtUtil.getUserInfoFromToken(token);
             setAuthentication(info.getSubject());
